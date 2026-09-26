@@ -141,18 +141,18 @@ contexts:
     - match: \b(size_of|align_of|offset_of|type_of)\b\s*(\()
       captures:
         1: keyword.function.odin
-        2: punctuation.separator.odin
+        2: punctuation.section.parens.odin
     - match: \b(type_info_of|typeid_of)\b\s*(\()
       captures:
         1: keyword.function.odin
-        2: punctuation.separator.odin
+        2: punctuation.section.parens.odin
     - match: (proc)\s*[\(]
       captures:
         1: storage.type.odin
     - match: ({{identifier}})\s*[!]?\s*(\()
       captures:
         1: support.function.odin
-        2: punctuation.separator.odin
+        2: punctuation.section.parens.odin
     
     - match: '\b({{identifier}})\s*(:)\s*(:)\s*(struct|union|enum|bit_set)'
       captures:
