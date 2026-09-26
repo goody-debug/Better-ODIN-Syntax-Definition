@@ -184,9 +184,8 @@ contexts:
         2: punctuation.separator.odin
         3: entity.name.type.odin
 
-    - match: '\b(?!(?:if|for|switch|when|else|struct|enum|union|map|bit_set)\b)([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=\{)'
-      captures:
-        1: entity.name.type.odin
+    - match: '(?::=|=|return|\(|,|\[\vert{}\])\s*\K([a-zA-Z_][a-zA-Z0-9_]*)\b(?=\s*\{)'
+      scope: entity.name.type.odin
 
     - match: '{{screaming_identifier}}'
       scope: constant.other.odin
