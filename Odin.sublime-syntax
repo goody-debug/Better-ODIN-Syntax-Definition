@@ -111,8 +111,8 @@ contexts:
     - match: '(\.)'
       scope: punctuation.accessor.odin
       
-    # - match: '(\$)'
-    #   scope: keyword.generic.odin
+    - match: '(\$)'
+      scope: keyword.generic.odin
 
   functions-and-declarations:
     - match: '\b({{identifier}})\s*(:)\s*(:)\s*(proc)'
