@@ -49,6 +49,14 @@ contexts:
           pop: true
 
   keywords:
+    - match: '(\(|\))'
+      scope: punctuation.section.parens.odin
+    - match: '(\{|\})'
+      scope: punctuation.section.braces.odin
+    - match: '(\[|\])'
+      scope: punctuation.section.brackets.odin
+    - match: '(,|;)'
+      scope: punctuation.separator.odin
     - match: \b(import|foreign|package)\b
       scope: keyword.control.odin
     - match: \b(if|else|when|for|in|not_in|defer|switch|return|const|do|where)\b
