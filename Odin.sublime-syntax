@@ -168,13 +168,15 @@ contexts:
         
 
   types:
-    - match: '(?<=:)\s*(?!:|=)\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
+    - match: '(:)\s*(?!:|=)\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
       captures:
-        1: entity.name.type.odin
+        1: keyword.operator.odin
+        2: entity.name.type.odin
 
-    - match: '(?<=->)\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
+    - match: '(->)\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
       captures:
-        1: entity.name.type.odin
+        1: keyword.operator.odin
+        2: entity.name.type.odin
 
     - match: '(?<=\])\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
       captures:
@@ -190,14 +192,15 @@ contexts:
         2: punctuation.separator.odin
         3: entity.name.type.odin
 
+    - match: '\b([A-Z][a-zA-Z0-9_]*)\s*(?=\{)'
+      captures:
+        1: entity.name.type.odin
+
     - match: '\b(cast|transmute)\s*(\()\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
       captures:
         1: keyword.function.odin
         2: punctuation.separator.odin
         3: entity.name.type.odin
-
-    - match: '(?::=|=|return|\(|,|\[\vert{}\])\s*\K([a-zA-Z_][a-zA-Z0-9_]*)\b(?=\s*\{)'
-      scope: entity.name.type.odin
 
     - match: '{{screaming_identifier}}'
       scope: constant.other.odin
