@@ -1,6 +1,5 @@
 %YAML 1.2
 ---
-# http://www.sublimetext.com/docs/3/syntax.html
 name: Odin
 file_extensions:
   - odin
@@ -49,11 +48,23 @@ contexts:
           pop: true
 
   keywords:
-    - match: '(\(|\))'
+    - match: '\('
+      scope: punctuation.section.parens.odin
+    - match: '\)'
+      scope: punctuation.section.parens.odin
+    - match: '\{'
+      scope: punctuation.section.braces.odin
+    - match: '\}'
+      scope: punctuation.section.braces.odin
+    - match: '\['
+      scope: punctuation.section.brackets.odin
+    - match: '\]'
+      scope: punctuation.section.brackets.odin
+    - match: '(\(\vert{}\))'
       scope: punctuation.section.parens.odin
     - match: '(\{|\})'
       scope: punctuation.section.braces.odin
-    - match: '(\[|\])'
+    - match: '(\[\vert{}\])'
       scope: punctuation.section.brackets.odin
     - match: '(,|;)'
       scope: punctuation.separator.odin
@@ -94,8 +105,6 @@ contexts:
     - match: '([#]\s*{{identifier}})'
       scope: keyword.tag.odin
 
-    # file tags such as #+build -- Note the special rule for comments. File tags
-    # don't follow normal grammar rules.
     - match: '(#\+\s*)(.*(?=(//|/\*))|.*)'
       scope: keyword.tag.odin
 
@@ -105,15 +114,13 @@ contexts:
       scope: keyword.tag.odin
     - match: '@'
       scope: keyword.operator.odin
-    - match: '(\(|\)|\{|\}|\[|\]|,|;)'
-      scope: punctuation.separator.odin
 
     - match: '(\&|\^)'
       scope: keyword.operator.pointer.odin
 
     - match: '(\.)([a-zA-Z_][a-zA-Z0-9_]*)\b(?!\s*\()'
       captures:
-        1: punctuation.accessor.odin,
+        1: punctuation.accessor.odin
         2: variable.other.member.odin
 
     - match: '(\.)'
@@ -149,9 +156,15 @@ contexts:
     - match: (proc)\s*[\(]
       captures:
         1: storage.type.odin
-    - match: ({{identifier}})\s*[!]?\s*(\()
+
+    - match: \b(new|make|len|cap|append|delete|clear|reserve|free|assert|panic)\b\s*(\()
       captures:
         1: support.function.odin
+        2: punctuation.section.parens.odin
+
+    - match: ({{identifier}})\s*[!]?\s*(\()
+      captures:
+        1: variable.function.odin
         2: punctuation.section.parens.odin
     
     - match: '\b({{identifier}})\s*(:)\s*(:)\s*(struct|union|enum|bit_set)'
@@ -174,20 +187,48 @@ contexts:
         2: keyword.operator.odin
         3: keyword.operator.odin
         
-
   types:
+    - match: '\b(enum)\b'
+      scope: storage.type.odin
+      push:
+        - match: '\}'
+          scope: punctuation.section.braces.odin
+          pop: true
+        - match: '\{'
+          scope: punctuation.section.braces.odin
+        - match: '\b([A-Z][a-zA-Z0-9_]*)\b'
+          scope: constant.other.enum.odin
+        - match: ','
+          scope: punctuation.separator.odin
+        - include: comments
+
+    - match: '\b(union)\b'
+      scope: storage.type.odin
+      push:
+        - match: '\}'
+          scope: punctuation.section.braces.odin
+          pop: true
+        - match: '\{'
+          scope: punctuation.section.braces.odin
+        - match: '\b([A-Z][a-zA-Z0-9_]*)\b'
+          scope: source.odin
+        - match: ','
+          scope: punctuation.separator.odin
+        - include: comments
+
+    - match: '\b([A-Z][a-zA-Z0-9_]*)\s*(?=:([^:=]|$))'
+      scope: variable.other.member.odin
+
     - match: '{{screaming_identifier}}'
       scope: constant.other.odin
 
-    - match: '(:)\s*(?!:|=)\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
+    - match: '(?<=:)\s*(?!:|=)\s*(?!(?:struct|enum|union|bit_set|map|dynamic)\b)([a-zA-Z_][a-zA-Z0-9_]*)\b'
       captures:
-        1: keyword.operator.odin
-        2: entity.name.type.odin
+        1: entity.name.type.odin
 
-    - match: '(->)\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
+    - match: '(?<=->)\s*(?!(?:struct|enum|union|bit_set|map|dynamic)\b)([a-zA-Z_][a-zA-Z0-9_]*)\b'
       captures:
-        1: keyword.operator.odin
-        2: entity.name.type.odin
+        1: entity.name.type.odin
 
     - match: '(?<=\])\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
       captures:
@@ -200,25 +241,24 @@ contexts:
     - match: '\b(map)\b\s*(\[)\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
       captures:
         1: storage.type.odin
-        2: punctuation.separator.odin
+        2: punctuation.section.brackets.odin
         3: entity.name.type.odin
 
-    - match: '\b([A-Z][a-zA-Z0-9_]*)\s*(?=\{)'
+    - match: '(?<=\[|;|\$)\s*([A-Z][a-zA-Z0-9_]*)\b'
       captures:
         1: entity.name.type.odin
 
     - match: '\b(cast|transmute)\s*(\()\s*([a-zA-Z_][a-zA-Z0-9_]*)\b'
       captures:
         1: keyword.function.odin
-        2: punctuation.separator.odin
+        2: punctuation.section.parens.odin
         3: entity.name.type.odin
 
-    - match: '\b(struct|enum|union|bit_set)\b(?:(\{)(\}))?'
+    - match: '\b(struct|bit_set)\b(?:(\{)(\}))?'
       captures:
         1: storage.type.odin
-        2: meta.block.odin punctuation.definition.block.begin.odin 
-        # 2: meta.block.odin punctuation.separator.odin
-        3: meta.block.odin punctuation.definition.block.end.odin
+        2: meta.block.odin punctuation.section.braces.odin 
+        3: meta.block.odin punctuation.section.braces.odin
 
     - match: '\b(proc)\b'
       scope: storage.type.odin
@@ -226,16 +266,19 @@ contexts:
     - match: (\[)(\d*)(\])(?=[[:alpha:]_])
       scope: meta.brackets.odin 
       captures:
-        1: punctuation.definition.brackets.begin.odin punctuation.separator.odin
+        1: punctuation.section.brackets.odin
         2: constant.numeric.odin
-        3: punctuation.definition.brackets.end.odin punctuation.separator.odin
+        3: punctuation.section.brackets.odin
+
+    - match: '(?<!\.)\b[A-Z][a-zA-Z0-9_]*\b(?!\s*\()'
+      scope: entity.name.type.odin
+
     - include: basic-types
 
     - match: '(\$)\s*({{identifier}})'
       captures:
           1: keyword.generic.odin
           2: storage.type.odin
-
 
   basic-types:
     - match: '\b(i8|i16|i32|i64|i128|int)\b'
@@ -262,7 +305,6 @@ contexts:
       scope: storage.type.odin
     - match: '\b(byte)\b'
       scope: storage.type.odin
-
     - match: '\b(u16le|u32le|u64le|u128le|i16le|i32le|i64le|i128le)\b'
       scope: storage.type.odin
     - match: '\b(i16be|i32be|i64be|i128be|u16be|u32be|u64be|u128be)\b'
